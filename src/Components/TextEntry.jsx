@@ -3,7 +3,7 @@ import Form from 'react-bootstrap/Form';
 
 function TextEntry(props) {
     return <Form>
-        <Form.Group style={{ textAlign: "left" }}>
+        <Form.Group style={{ textAlign: "left", margin: 10 }}>
             <Form.Label>{props.label}</Form.Label>
             <Form.Control 
             size="sm" 

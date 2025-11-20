@@ -45,7 +45,8 @@ function SearchPage(props) {
     }
 
     return (
-    <><Card>
+    <><Card
+    style={{margin:10}}>
         <TextEntry
         label="First Name"
         value={firstName}

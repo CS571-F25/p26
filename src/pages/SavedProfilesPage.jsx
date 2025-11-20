@@ -12,10 +12,12 @@ function SavedProfilesPage(props) {
         }
     }
 
-    return <Card>
+    return <Card
+    style={{margin: 10}}>
         <CardHeader>Saved Profiles Page!</CardHeader>
         {noPeople ? 
-        <Card.Text>You haven't saved any people yet!</Card.Text> : 
+        <Card.Text
+        style={{margin:10}}>You haven't saved any people yet!</Card.Text> : 
         <PersonList
         people={props.people}
         initialState={true}

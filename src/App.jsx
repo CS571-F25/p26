@@ -29,6 +29,12 @@ export default function App() {
     <Router>
       <NavigationBar />
       <Routes>
+        <Route path="/p26" element={
+          <SearchPage 
+          addFavoritePerson={addPerson}
+          deleteFavoritePerson={deletePerson}
+          favorites={favoritePeople}/>
+          } />
         <Route path="/" element={
           <SearchPage 
           addFavoritePerson={addPerson}
