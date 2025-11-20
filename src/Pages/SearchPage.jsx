@@ -36,6 +36,14 @@ function SearchPage(props) {
         return str.trim().toLowerCase();
     }
 
+    function setFavorite(person, bool) {
+        if (!bool) {
+            props.addFavoritePerson(person);
+        } else {
+            props.deleteFavoritePerson(person.id)
+        }
+    }
+
     return (
     <><Card>
         <TextEntry
@@ -59,6 +67,9 @@ function SearchPage(props) {
     </Card>
     <PersonList
     people={filteredPeople}
+    toggleFavorite={setFavorite}
+    initialState={false}
+    favorites={props.favorites}
     />
     </>)
 }
