@@ -1,39 +1,26 @@
 import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
-import SearchPage from "./Pages/SearchPage"
-import SavedProfilesPage from './Pages/SavedProfilesPage'
-import './App.css'
+import { BrowserRouter as Router, Routes, Route } from "react-router";
+import NavigationBar from "./components/NavigationBar";
+import SearchPage from "./pages/SearchPage";
+import SavedProfilesPage from "./pages/SavedProfilesPage";
+import SettingsPage from "./pages/SettingsPage";
+import "bootstrap/dist/css/bootstrap.min.css";
 
-function App() {
-  const [favoritePeople, setFavoritePeople] = useState([
-  ]);
-
-  function addPerson(newPerson) {
-    console.log("adding person: " + newPerson.id);
-    setFavoritePeople(prev => [...prev, newPerson]);
-  }
-
-  function deletePerson(id) {
-    console.log("deleting person: " + id);
-    setFavoritePeople(prev => prev.filter(person => person.id !== id));
-  }
+export default function App() {
+  const [darkMode, setDarkMode] = useState(false);
 
   return (
-    <>
-      <SearchPage
-      addFavoritePerson={addPerson}
-      deleteFavoritePerson={deletePerson}
-      favorites={favoritePeople}
-      />
-      <SavedProfilesPage
-      people={favoritePeople}
-      addFavoritePerson={addPerson}
-      deleteFavoritePerson={deletePerson}
-      favorites={favoritePeople}
-      />
-    </>
-  )
+  <div className={darkMode ? "bg-dark text-light" : "bg-light text-dark"} style={{ minHeight: "100vh", width: "100vw" }}>
+    <Router>
+      <NavigationBar />
+      <Routes>
+        <Route path="/" element={<SearchPage />} />
+        <Route path="/saved" element={<SavedProfilesPage />} />
+        <Route path="/settings" element={<SettingsPage darkMode={darkMode} setDarkMode={setDarkMode} />} />
+    </Routes>
+    </Router>
+  </div>
+  );
 }
-
-export default App
