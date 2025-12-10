@@ -1,5 +1,5 @@
 import { CardHeader, Card } from "react-bootstrap";
-import PersonList from "../Components/PersonList";
+import PersonList from "../components/PersonList";
 
 function SavedProfilesPage(props) {
     let noPeople = props.people.length == 0;

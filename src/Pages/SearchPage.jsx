@@ -1,7 +1,7 @@
 import { useState } from "react";
-import TextEntry from "../Components/TextEntry";
+import TextEntry from "../components/TextEntry";
 import { Button, Card } from "react-bootstrap";
-import PersonList from "../Components/PersonList";
+import PersonList from "../components/PersonList";
 
 const FUNCTION_BASE_URL = "https://us-central1-badgerfind.cloudfunctions.net";
 
