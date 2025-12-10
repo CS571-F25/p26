@@ -3,76 +3,98 @@ import TextEntry from "../Components/TextEntry";
 import { Button, Card } from "react-bootstrap";
 import PersonList from "../Components/PersonList";
 
+const FUNCTION_BASE_URL = "https://us-central1-badgerfind.cloudfunctions.net";
+
 function SearchPage(props) {
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
-    const [people, setPeople] = useState([
-        {id:1, firstName:"Jane", lastName:"Doe"},
-        {id:2, firstName:"John", lastName:"Doe"},
-        {id:3, firstName:"Jane", lastName:"Smith"},
-        {id:4, firstName:"John", lastName:"Smith"},
-        {id:5, firstName:"Ryan", lastName:"Khalloqi"},
-        {id:6, firstName:"Neil", lastName:"D'Souza"},
-    ]);
+    const [people, setPeople] = useState([]);
     const [searchedFirstName, setSearchedFirstName] = useState("");
     const [searchedLastName, setSearchedLastName] = useState("");
 
-    let filteredPeople = people.filter(person => {
-        const f = cleanString(searchedFirstName);
-        const l = cleanString(searchedLastName);
-
-        return (
-            f === cleanString(person.firstName).substring(0, f.length) &&
-            l === cleanString(person.lastName).substring(0, l.length)
-        );
-    });
-
-    function search() {
-        setSearchedFirstName(firstName);
-        setSearchedLastName(lastName);
-    }
-
     function cleanString(str) {
         return str.trim().toLowerCase();
+    }
+
+    async function search() {
+        const f = cleanString(firstName);
+        const l = cleanString(lastName);
+
+        if (!f && !l) {
+            setPeople([]);
+            setSearchedFirstName("");
+            setSearchedLastName("");
+            return;
+        }
+
+        try {
+            const params = new URLSearchParams();
+            if (f) params.append("firstName", f);
+            if (l) params.append("lastName", l);
+
+            const res = await fetch(
+                `${FUNCTION_BASE_URL}/searchPeople?${params.toString()}`
+            );
+
+            if (!res.ok) {
+                console.error("Backend error:", res.status, res.statusText);
+                setPeople([]);
+                return;
+            }
+
+            const data = await res.json();
+
+            setPeople(data.people || []);
+            setSearchedFirstName(firstName);
+            setSearchedLastName(lastName);
+        } catch (err) {
+            console.error("Error calling backend", err);
+            setPeople([]);
+        }
     }
 
     function setFavorite(person, bool) {
         if (!bool) {
             props.addFavoritePerson(person);
         } else {
-            props.deleteFavoritePerson(person.id)
+            props.deleteFavoritePerson(person.id);
         }
     }
 
+    const filteredPeople = people;
+
     return (
-    <><Card
-    style={{margin:10}}>
-        <TextEntry
-        label="First Name"
-        value={firstName}
-        onChange={setFirstName}
-        />
-        <TextEntry
-        label="Last Name"
-        value={lastName}
-        onChange={setLastName}
-        />
-        <Button
-        style={{
-            margin: 20,
-            backgroundColor:"green",
-            outlineColor:"red"
-        }}
-        onClick={search}
-        >Search!</Button>
-    </Card>
-    <PersonList
-    people={filteredPeople}
-    toggleFavorite={setFavorite}
-    initialState={false}
-    favorites={props.favorites}
-    />
-    </>)
+        <>
+            <Card style={{ margin: 10 }}>
+                <TextEntry
+                    label="First Name"
+                    value={firstName}
+                    onChange={setFirstName}
+                />
+                <TextEntry
+                    label="Last Name"
+                    value={lastName}
+                    onChange={setLastName}
+                />
+                <Button
+                    style={{
+                        margin: 20,
+                        backgroundColor: "green",
+                        outlineColor: "red"
+                    }}
+                    onClick={search}
+                >
+                    Search!
+                </Button>
+            </Card>
+            <PersonList
+                people={filteredPeople}
+                toggleFavorite={setFavorite}
+                initialState={false}
+                favorites={props.favorites}
+            />
+        </>
+    );
 }
 
-export default SearchPage
+export default SearchPage;
