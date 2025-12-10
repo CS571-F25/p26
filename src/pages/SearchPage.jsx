@@ -11,6 +11,7 @@ import {
 } from "react-bootstrap";
 import TextEntry from "../components/TextEntry";
 import PersonList from "../components/PersonList";
+import PeoplePaginator from "../Components/PeoplePaginator";
 
 const FUNCTION_BASE_URL = "https://us-central1-badgerfind.cloudfunctions.net";
 
@@ -22,6 +23,7 @@ function SearchPage(props) {
     const [error, setError] = useState("");
     const [hasSearched, setHasSearched] = useState(false);
     const [sortBy, setSortBy] = useState("lastName"); // "lastName" or "firstName"
+    const [pageNumber, setPageNumber] = useState(0);
 
     function cleanString(str) {
         return str.trim().toLowerCase();
@@ -71,6 +73,7 @@ function SearchPage(props) {
             setError("Network error while searching. Please check your connection.");
         } finally {
             setIsLoading(false);
+            setPageNumber(0);
         }
     }
 
@@ -312,15 +315,15 @@ function SearchPage(props) {
                 <Row className="justify-content-center">
                     <Col xs={12} md={11} lg={10}>
                         <section aria-label="Search results">
-                            <PersonList
+                            <PeoplePaginator
                                 people={sortedPeople}
                                 toggleFavorite={setFavorite}
-                                initialState={false}
                                 favorites={props.favorites}
                                 darkMode={props.darkMode}
                                 // Make sure clicks still propagate to the details page
                                 onPersonClick={props.onPersonClick}
-                            />
+                                pageNumber={pageNumber}
+                                setPageNumber={setPageNumber}/>
                         </section>
                     </Col>
                 </Row>
