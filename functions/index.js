@@ -12,7 +12,7 @@ function buildFilter(firstName, lastName) {
   const l = (lastName || "").trim();
 
   if (!f && !l) {
-    // Require at least something so we do not hammer the directory
+    // Require at least something so we do not hammer the directory.
     return null;
   }
 
