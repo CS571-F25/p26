@@ -14,14 +14,14 @@ function PersonLi(props) {
 
     return (
         <ListGroup horizontal>
-            <ListGroup.Item style={{ flex: 1, backgroundColor: props.backgroundColor }}>
+            <ListGroup.Item style={{ flex: 1, backgroundColor: props.backgroundColor, color:props.textColor }}>
                 {props.firstName}
             </ListGroup.Item>
-            <ListGroup.Item style={{ flex: 1, backgroundColor: props.backgroundColor }}>
+            <ListGroup.Item style={{ flex: 1, backgroundColor: props.backgroundColor, color:props.textColor }}>
                 {props.lastName}
             </ListGroup.Item>
             <ListGroup.Item
-                style={{ flex: 0.2, textAlign: "center", cursor: "pointer", backgroundColor: props.backgroundColor }}
+                style={{ flex: 0.2, textAlign: "center", cursor: "pointer", backgroundColor: props.backgroundColor, color:props.textColor }}
                 onClick={toggleFavorite}
             >
                 {isFavorite ? "⭐" : "☆"}
