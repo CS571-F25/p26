@@ -7,19 +7,38 @@ import SettingsPage from "./pages/SettingsPage";
 import ContactDetails from "./pages/ContactDetails";
 import "bootstrap/dist/css/bootstrap.min.css";
 
+function loadFavorites() {
+  try {
+    const stored = localStorage.getItem("favoritePeople");
+    return stored ? JSON.parse(stored) : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveFavorites(favorites) {
+  localStorage.setItem("favoritePeople", JSON.stringify(favorites));
+}
+
 export default function App() {
   const [darkMode, setDarkMode] = useState(false);
 
-  const [favoritePeople, setFavoritePeople] = useState([]);
+  const [favoritePeople, setFavoritePeople] = useState(() => loadFavorites());
 
   function addPerson(newPerson) {
-    console.log("adding person: " + newPerson.id);
-    setFavoritePeople((prev) => [...prev, newPerson]);
+    setFavoritePeople(prev => {
+      const updated = [...prev, newPerson];
+      localStorage.setItem("favoritePeople", JSON.stringify(updated));
+      return updated;
+    });
   }
 
   function deletePerson(id) {
-    console.log("deleting person: " + id);
-    setFavoritePeople((prev) => prev.filter((person) => person.id !== id));
+    setFavoritePeople(prev => {
+      const updated = prev.filter(person => person.id !== id);
+      localStorage.setItem("favoritePeople", JSON.stringify(updated));
+      return updated;
+    });
   }
 
   return (
