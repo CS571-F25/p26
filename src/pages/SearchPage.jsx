@@ -225,9 +225,9 @@ function SearchPage(props) {
                         >
                             <Card.Body>
                                 <header style={{ marginBottom: "1.5rem" }}>
-                                    <h2 style={{ fontSize: "1.8rem", fontWeight: 600 }}>
+                                    <h1 style={{ fontSize: "1.8rem", fontWeight: 600 }}>
                                         Find a Badger
-                                    </h2>
+                                    </h1>
                                     <p
                                         style={{
                                             margin: 0,
