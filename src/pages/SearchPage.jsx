@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
     Button,
     ButtonGroup,
@@ -14,6 +14,27 @@ import PersonList from "../components/PersonList";
 import PeoplePaginator from "../Components/PeoplePaginator";
 
 const FUNCTION_BASE_URL = "https://us-central1-badgerfind.cloudfunctions.net";
+const SEARCH_STATE_KEY = "badgerfind_search_state";
+
+// Load saved search state from localStorage
+function loadSearchState() {
+    try {
+        const raw = localStorage.getItem(SEARCH_STATE_KEY);
+        if (!raw) return null;
+        return JSON.parse(raw);
+    } catch {
+        return null;
+    }
+}
+
+// Save search state to localStorage
+function saveSearchState(state) {
+    try {
+        localStorage.setItem(SEARCH_STATE_KEY, JSON.stringify(state));
+    } catch {
+        // ignore storage errors
+    }
+}
 
 function SearchPage(props) {
     const [firstName, setFirstName] = useState("");
@@ -29,22 +50,67 @@ function SearchPage(props) {
         return str.trim().toLowerCase();
     }
 
+    // On mount, restore previous search state if it exists
+    useEffect(() => {
+        const saved = loadSearchState();
+        if (saved) {
+            setFirstName(saved.firstName || "");
+            setLastName(saved.lastName || "");
+            setPeople(saved.people || []);
+            setHasSearched(!!saved.hasSearched);
+            setSortBy(saved.sortBy || "lastName");
+            setError(saved.error || "");
+        }
+    }, []);
+
+    // When sort order changes, persist current state
+    useEffect(() => {
+        saveSearchState({
+            firstName,
+            lastName,
+            people,
+            hasSearched,
+            sortBy,
+            error
+        });
+    }, [sortBy, firstName, lastName, people, hasSearched, error]);
+
     async function search() {
         const f = cleanString(firstName);
         const l = cleanString(lastName);
 
         // Require at least 3 characters in each non empty field
         if ((f && f.length < 3) || (l && l.length < 3)) {
+            const newState = {
+                firstName,
+                lastName,
+                people: [],
+                hasSearched: false,
+                sortBy,
+                error: "Please enter at least 3 characters for each name."
+            };
             setPeople([]);
-            setError("Please enter at least 3 characters for each name.");
+            setError(newState.error);
             setHasSearched(false);
+            saveSearchState(newState);
             return;
         }
 
         if (!f && !l) {
+            const newState = {
+                firstName: "",
+                lastName: "",
+                people: [],
+                hasSearched: false,
+                sortBy,
+                error: ""
+            };
+            setFirstName("");
+            setLastName("");
             setPeople([]);
             setError("");
             setHasSearched(false);
+            saveSearchState(newState);
             return;
         }
 
@@ -62,15 +128,44 @@ function SearchPage(props) {
             );
 
             if (!res.ok) {
+                const newState = {
+                    firstName,
+                    lastName,
+                    people: [],
+                    hasSearched: true,
+                    sortBy,
+                    error: "Something went wrong while searching. Please try again."
+                };
                 setPeople([]);
-                setError("Something went wrong while searching. Please try again.");
+                setError(newState.error);
+                saveSearchState(newState);
             } else {
                 const data = await res.json();
-                setPeople(data.people || []);
+                const newPeople = data.people || [];
+                const newState = {
+                    firstName,
+                    lastName,
+                    people: newPeople,
+                    hasSearched: true,
+                    sortBy,
+                    error: ""
+                };
+                setPeople(newPeople);
+                setError("");
+                saveSearchState(newState);
             }
         } catch {
+            const newState = {
+                firstName,
+                lastName,
+                people: [],
+                hasSearched: true,
+                sortBy,
+                error: "Network error while searching. Please check your connection."
+            };
             setPeople([]);
-            setError("Network error while searching. Please check your connection.");
+            setError(newState.error);
+            saveSearchState(newState);
         } finally {
             setIsLoading(false);
             setPageNumber(0);
@@ -94,7 +189,6 @@ function SearchPage(props) {
         if (aVal < bVal) return -1;
         if (aVal > bVal) return 1;
 
-        // Tie breaker on the other field for stable sort
         const otherKey = sortBy === "firstName" ? "lastName" : "firstName";
         const aOther = (a[otherKey] || "").toLowerCase();
         const bOther = (b[otherKey] || "").toLowerCase();
@@ -134,9 +228,9 @@ function SearchPage(props) {
                         >
                             <Card.Body>
                                 <header style={{ marginBottom: "1.5rem" }}>
-                                    <h2 style={{ fontSize: "1.8rem", fontWeight: 600 }}>
+                                    <h1 style={{ fontSize: "1.8rem", fontWeight: 600 }}>
                                         Find a Badger
-                                    </h2>
+                                    </h1>
                                     <p
                                         style={{
                                             margin: 0,
@@ -228,11 +322,20 @@ function SearchPage(props) {
                                                 }
                                                 type="button"
                                                 onClick={() => {
+                                                    const clearedState = {
+                                                        firstName: "",
+                                                        lastName: "",
+                                                        people: [],
+                                                        hasSearched: false,
+                                                        sortBy,
+                                                        error: ""
+                                                    };
                                                     setFirstName("");
                                                     setLastName("");
                                                     setPeople([]);
                                                     setError("");
                                                     setHasSearched(false);
+                                                    saveSearchState(clearedState);
                                                 }}
                                             >
                                                 Clear
@@ -320,7 +423,6 @@ function SearchPage(props) {
                                 toggleFavorite={setFavorite}
                                 favorites={props.favorites}
                                 darkMode={props.darkMode}
-                                // Make sure clicks still propagate to the details page
                                 onPersonClick={props.onPersonClick}
                                 pageNumber={pageNumber}
                                 setPageNumber={setPageNumber}/>

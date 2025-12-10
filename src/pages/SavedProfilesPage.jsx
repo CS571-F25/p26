@@ -1,4 +1,4 @@
-import { Card, Container, Row, Col } from "react-bootstrap";
+import { Card, Container, Row, Col, Button } from "react-bootstrap";
 import { useNavigate } from "react-router";
 import PersonList from "../components/PersonList";
 
@@ -16,6 +16,79 @@ function SavedProfilesPage(props) {
 
   function handleSelectPerson(person) {
     navigate(`/contact/${encodeURIComponent(person.id)}`, { state: { person } });
+  }
+
+  function escapeCsvValue(value) {
+    if (value == null) {
+      return "";
+    }
+
+    // Join arrays into a single string
+    if (Array.isArray(value)) {
+      value = value.join("; ");
+    }
+
+    const str = String(value);
+
+    // If value contains comma, quote, or newline, wrap in quotes and escape quotes
+    if (/[",\n]/.test(str)) {
+      return `"${str.replace(/"/g, '""')}"`;
+    }
+    return str;
+  }
+
+  function handleExportCsv() {
+    if (props.people.length === 0) {
+      return;
+    }
+
+    const columns = [
+      { header: "ID", key: "id" },
+      { header: "First Name", key: "firstName" },
+      { header: "Last Name", key: "lastName" },
+      { header: "Display Name", key: "displayName" },
+      { header: "Email", key: "email" },
+      { header: "All Emails", key: "allEmails" },
+      { header: "Phone", key: "phone" },
+      { header: "All Phones", key: "allPhones" },
+      { header: "Title", key: "title" },
+      { header: "All Titles", key: "allTitles" },
+      { header: "Department", key: "department" },
+      { header: "All Departments", key: "allDepartments" },
+      { header: "Division", key: "division" },
+      { header: "All Divisions", key: "allDivisions" },
+      { header: "Office", key: "office" },
+      { header: "Street", key: "street" },
+      { header: "Postal Address", key: "postalAddress" },
+      { header: "Postal Code", key: "postalCode" },
+      { header: "City", key: "city" },
+      { header: "State", key: "state" },
+    ];
+
+    const headerLine = columns
+      .map(col => escapeCsvValue(col.header))
+      .join(",");
+
+    const dataLines = props.people.map(person =>
+      columns
+        .map(col => escapeCsvValue(person[col.key]))
+        .join(",")
+    );
+
+    const csvContent = [headerLine, ...dataLines].join("\r\n");
+
+    const blob = new Blob([csvContent], {
+      type: "text/csv;charset=utf-8;",
+    });
+
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", "saved_profiles.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   }
 
   const pageBackground = props.darkMode ? "#050505" : "#F5F5F5";
@@ -57,7 +130,18 @@ function SavedProfilesPage(props) {
                   fontWeight: 600,
                 }}
               >
-                Saved Profiles
+                <div className="d-flex justify-content-between align-items-center">
+                  <span>Saved Profiles</span>
+                  <Button
+                    variant="outline-secondary"
+                    size="sm"
+                    onClick={handleExportCsv}
+                    disabled={noPeople}
+                    aria-label="Export saved profiles to CSV"
+                  >
+                    Export CSV
+                  </Button>
+                </div>
               </Card.Header>
               <Card.Body>
                 {noPeople ? (
