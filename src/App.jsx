@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router";
+import { HashRouter as Router, Routes, Route } from "react-router-dom";
 import NavigationBar from "./components/NavigationBar";
 import SearchPage from "./pages/SearchPage";
 import SavedProfilesPage from "./pages/SavedProfilesPage";
@@ -22,13 +22,12 @@ function saveFavorites(favorites) {
 
 export default function App() {
   const [darkMode, setDarkMode] = useState(false);
-
   const [favoritePeople, setFavoritePeople] = useState(() => loadFavorites());
 
   function addPerson(newPerson) {
     setFavoritePeople(prev => {
       const updated = [...prev, newPerson];
-      localStorage.setItem("favoritePeople", JSON.stringify(updated));
+      saveFavorites(updated);
       return updated;
     });
   }
@@ -36,7 +35,7 @@ export default function App() {
   function deletePerson(id) {
     setFavoritePeople(prev => {
       const updated = prev.filter(person => person.id !== id);
-      localStorage.setItem("favoritePeople", JSON.stringify(updated));
+      saveFavorites(updated);
       return updated;
     });
   }
@@ -49,17 +48,6 @@ export default function App() {
       <Router>
         <NavigationBar darkMode={darkMode} />
         <Routes>
-          <Route
-            path="/p26"
-            element={
-              <SearchPage
-                darkMode={darkMode}
-                addFavoritePerson={addPerson}
-                deleteFavoritePerson={deletePerson}
-                favorites={favoritePeople}
-              />
-            }
-          />
           <Route
             path="/"
             element={
@@ -86,7 +74,10 @@ export default function App() {
           <Route
             path="/settings"
             element={
-              <SettingsPage darkMode={darkMode} setDarkMode={setDarkMode} />
+              <SettingsPage
+                darkMode={darkMode}
+                setDarkMode={setDarkMode}
+              />
             }
           />
           <Route
