@@ -9,8 +9,6 @@ function SearchPage(props) {
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [people, setPeople] = useState([]);
-    const [searchedFirstName, setSearchedFirstName] = useState("");
-    const [searchedLastName, setSearchedLastName] = useState("");
 
     function cleanString(str) {
         return str.trim().toLowerCase();
@@ -22,8 +20,6 @@ function SearchPage(props) {
 
         if (!f && !l) {
             setPeople([]);
-            setSearchedFirstName("");
-            setSearchedLastName("");
             return;
         }
 
@@ -43,10 +39,7 @@ function SearchPage(props) {
             }
 
             const data = await res.json();
-
             setPeople(data.people || []);
-            setSearchedFirstName(firstName);
-            setSearchedLastName(lastName);
         } catch (err) {
             console.error("Error calling backend", err);
             setPeople([]);
@@ -62,10 +55,18 @@ function SearchPage(props) {
     }
 
     const filteredPeople = people;
+    const backgroundColor = props.darkMode ? "#111111" : "#FFFFFF";
+    const textColor = props.darkMode ? "#FFFFFF" : "#000000";
 
     return (
         <>
-            <Card style={{ margin: 10 }}>
+            <Card
+                style={{
+                    margin: 10,
+                    backgroundColor: backgroundColor,
+                    color: textColor
+                }}
+            >
                 <TextEntry
                     label="First Name"
                     value={firstName}
@@ -92,6 +93,7 @@ function SearchPage(props) {
                 toggleFavorite={setFavorite}
                 initialState={false}
                 favorites={props.favorites}
+                darkMode={props.darkMode}
             />
         </>
     );
