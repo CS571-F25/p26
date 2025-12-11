@@ -14,15 +14,19 @@ function PeoplePaginator(props) {
     let paginationItems = [];
     const current = pageNumber + 1;
 
+    const backgroundColor = props.darkMode ? "#111111" : "#FFFFFF";
+    const textColor = props.darkMode ? "#FFFFFF" : "#000000";
+
     function addPage(num) {
         paginationItems.push(
-            <Pagination.Item
+        <Pagination.Item
             key={num}
             active={num === current}
             onClick={() => setPageNumber(num - 1)}
-            >
+            linkStyle={{ backgroundColor: backgroundColor, color: textColor }}
+        >
             {num}
-            </Pagination.Item>
+        </Pagination.Item>
         );
     }
 
@@ -50,7 +54,6 @@ function PeoplePaginator(props) {
 
         addPage(totalPages);
     }
-
 
     return <>
                 <PersonList
