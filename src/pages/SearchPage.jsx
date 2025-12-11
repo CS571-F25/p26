@@ -278,24 +278,24 @@ function SearchPage(props) {
                 <Row className="g-3">
                   <Col md={6}>
                     <TextEntry
-                        label="First Name"
-                        value={firstName}
-                        onChange={setFirstName}
-                        ariaLabel="First name to search"
-                        onKeyDown={(e) => {
-                            if (e.key === "Enter") e.preventDefault();
-                        }}
+                      label="First Name"
+                      value={firstName}
+                      onChange={setFirstName}
+                      ariaLabel="First name to search"
+                      onKeyDown={e => {
+                        if (e.key === "Enter") e.preventDefault();
+                      }}
                     />
                   </Col>
                   <Col md={6}>
                     <TextEntry
-                        label="Last Name"
-                        value={lastName}
-                        onChange={setLastName}
-                        ariaLabel="Last name to search"
-                        onKeyDown={(e) => {
-                            if (e.key === "Enter") e.preventDefault();
-                        }}
+                      label="Last Name"
+                      value={lastName}
+                      onChange={setLastName}
+                      ariaLabel="Last name to search"
+                      onKeyDown={e => {
+                        if (e.key === "Enter") e.preventDefault();
+                      }}
                     />
                   </Col>
                 </Row>
