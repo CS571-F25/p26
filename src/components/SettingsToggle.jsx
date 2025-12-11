@@ -1,13 +1,14 @@
-import { FaMoon, FaSearch, FaBuilding } from "react-icons/fa";
+import { FaMoon, FaSearch } from "react-icons/fa";
 
-export default function SettingsToggle({ label, checked, onChange }) {
+export default function SettingsToggle({ label, checked, onChange, darkMode }) {
+    const BADGER_RED = "#C5050C";
 
     const rowStyle = {
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
         padding: "1rem 0",
-        borderBottom: "1px solid #e5e5e5"
+        borderBottom: darkMode ? "1px solid #333" : "1px solid #e5e5e5"
     };
 
     const labelStyle = {
@@ -15,14 +16,13 @@ export default function SettingsToggle({ label, checked, onChange }) {
         alignItems: "center",
         gap: "0.75rem",
         fontSize: "1.1rem",
-        color: "#333"
+        color: darkMode ? "#FFFFFF" : "#333"
     };
 
-    // Choose an icon based on the label
+    // choose icon
     const getIcon = () => {
-        if (label === "Dark Mode") return <FaMoon size={20} />;
-        if (label === "Fuzzy Search") return <FaSearch size={20} />;
-        if (label === "Show Departments") return <FaBuilding size={20} />;
+        if (label === "Dark Mode") return <FaMoon size={20} color={darkMode ? "#fff" : "#333"} />;
+        if (label === "Fuzzy Search") return <FaSearch size={20} color={darkMode ? "#fff" : "#333"} />;
         return null;
     };
 
@@ -33,12 +33,19 @@ export default function SettingsToggle({ label, checked, onChange }) {
                 {label}
             </span>
 
+            {/* CUSTOM styled switch */}
             <div className="form-check form-switch">
                 <input
                     className="form-check-input"
                     type="checkbox"
                     checked={checked}
                     onChange={onChange}
+                    style={{
+                        cursor: "pointer",
+                        backgroundColor: checked ? BADGER_RED : undefined,
+                        borderColor: checked ? BADGER_RED : undefined,
+                        boxShadow: "none"
+                    }}
                 />
             </div>
         </div>

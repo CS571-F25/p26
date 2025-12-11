@@ -1,75 +1,98 @@
-import { useState } from "react";
 import PersonList from "../components/PersonList";
 import { Pagination } from "react-bootstrap";
 
 function PeoplePaginator(props) {
     const pageNumber = props.pageNumber;
     const setPageNumber = props.setPageNumber;
-
     const pageSize = 10;
-    const totalPages = Math.ceil(props.people.length / pageSize)
 
-    const peoplePage = props.people.slice(pageNumber*pageSize, (pageNumber*pageSize) + pageSize);
+    const totalPages = Math.ceil(props.people.length / pageSize);
+    const peoplePage = props.people.slice(
+        pageNumber * pageSize,
+        pageNumber * pageSize + pageSize
+    );
 
-    let paginationItems = [];
+    const accentColor = props.accentColor || "#C5050C"; 
+    const grayBorder = "#B0B0B0"; 
+
+    const paginationItems = [];
     const current = pageNumber + 1;
 
     const backgroundColor = props.darkMode ? "#111111" : "#FFFFFF";
     const textColor = props.darkMode ? "#FFFFFF" : "#000000";
 
     function addPage(num) {
+        const isActive = num === current;
+
         paginationItems.push(
-        <Pagination.Item
-            key={num}
-            active={num === current}
-            onClick={() => setPageNumber(num - 1)}
-            linkStyle={{ backgroundColor: backgroundColor, color: textColor }}
-        >
-            {num}
-        </Pagination.Item>
+            <Pagination.Item
+                key={num}
+                active={isActive}
+                onClick={() => setPageNumber(num - 1)}
+                style={{
+                    borderColor: grayBorder
+                }}
+                linkStyle={{
+                    backgroundColor: isActive ? accentColor : "transparent",
+                    color: isActive ? "#FFFFFF" : grayBorder,
+                    borderColor: grayBorder
+                }}
+            >
+                {num}
+            </Pagination.Item>
         );
     }
 
     if (totalPages <= 9) {
-        for (let i = 1; i <= totalPages; i++) {
-            addPage(i)
-        }
+        for (let i = 1; i <= totalPages; i++) addPage(i);
     } else {
         addPage(1);
 
         if (current > 4) {
-            paginationItems.push(<Pagination.Ellipsis key="left-ellipsis" disabled />);
+            paginationItems.push(
+                <Pagination.Ellipsis
+                    key="left-ellipsis"
+                    disabled
+                    style={{ color: grayBorder }}
+                />
+            );
         }
 
         const start = Math.max(2, current - 2);
         const end = Math.min(totalPages - 1, current + 2);
 
-        for (let i = start; i <= end; i++) {
-            addPage(i);
-        }
+        for (let i = start; i <= end; i++) addPage(i);
 
         if (current < totalPages - 3) {
-            paginationItems.push(<Pagination.Ellipsis key="right-ellipsis" disabled />);
+            paginationItems.push(
+                <Pagination.Ellipsis
+                    key="right-ellipsis"
+                    disabled
+                    style={{ color: grayBorder }}
+                />
+            );
         }
 
         addPage(totalPages);
     }
 
-    return <>
-                <PersonList
+    return (
+        <>
+            <PersonList
                 people={peoplePage}
                 toggleFavorite={props.toggleFavorite}
                 initialState={false}
                 favorites={props.favorites}
                 darkMode={props.darkMode}
-                // Make sure clicks still propagate to the details page
                 onPersonClick={props.onPersonClick}
-                />
-                <Pagination
-                style={{marginTop:10}}>
+            />
+            {totalPages > 1 && (
+                <Pagination className="justify-content-center mt-2">
                     {paginationItems}
                 </Pagination>
-            </>
+            )}
+        </>
+    );
 }
 
 export default PeoplePaginator;

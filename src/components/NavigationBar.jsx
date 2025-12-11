@@ -71,7 +71,7 @@ export default function NavigationBar() {
                         onMouseEnter={() => setHovered("settings")}
                         onMouseLeave={() => setHovered("")}
                     >
-                        Settings
+                        Settings/About
                     </Nav.Link>
 
                 </Nav>

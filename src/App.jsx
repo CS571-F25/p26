@@ -16,18 +16,16 @@ function loadFavorites() {
   }
 }
 
-function saveFavorites(favorites) {
-  localStorage.setItem("favoritePeople", JSON.stringify(favorites));
-}
-
 export default function App() {
   const [darkMode, setDarkMode] = useState(false);
+  const [fuzzySearch, setFuzzySearch] = useState(false);
+
   const [favoritePeople, setFavoritePeople] = useState(() => loadFavorites());
 
   function addPerson(newPerson) {
     setFavoritePeople(prev => {
       const updated = [...prev, newPerson];
-      saveFavorites(updated);
+      localStorage.setItem("favoritePeople", JSON.stringify(updated));
       return updated;
     });
   }
@@ -35,7 +33,7 @@ export default function App() {
   function deletePerson(id) {
     setFavoritePeople(prev => {
       const updated = prev.filter(person => person.id !== id);
-      saveFavorites(updated);
+      localStorage.setItem("favoritePeople", JSON.stringify(updated));
       return updated;
     });
   }
@@ -48,11 +46,13 @@ export default function App() {
       <Router>
         <NavigationBar darkMode={darkMode} />
         <Routes>
+          {/* HashRouter uses the part after #, so these paths stay simple */}
           <Route
             path="/"
             element={
               <SearchPage
                 darkMode={darkMode}
+                fuzzySearch={fuzzySearch}
                 addFavoritePerson={addPerson}
                 deleteFavoritePerson={deletePerson}
                 favorites={favoritePeople}
@@ -77,6 +77,8 @@ export default function App() {
               <SettingsPage
                 darkMode={darkMode}
                 setDarkMode={setDarkMode}
+                fuzzySearch={fuzzySearch}
+                setFuzzySearch={setFuzzySearch}
               />
             }
           />
