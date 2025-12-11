@@ -146,6 +146,7 @@ function ContactDetails({ darkMode }) {
                         {person.allPhones.join(", ")}
                       </p>
                     )}
+                    <Button onClick={() => {window.open("https://www.google.com/search?q=" + encodeURIComponent(person.firstName + " " + person.lastName + " UW Madison"), "_blank").focus();}}>Search {person.firstName + " " + person.lastName}.</Button>
                   </Col>
                 </Row>
 
