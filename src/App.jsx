@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { HashRouter as Router, Routes, Route } from "react-router-dom";
 import NavigationBar from "./components/NavigationBar";
 import SearchPage from "./pages/SearchPage";
@@ -21,6 +21,24 @@ export default function App() {
   const [fuzzySearch, setFuzzySearch] = useState(false);
 
   const [favoritePeople, setFavoritePeople] = useState(() => loadFavorites());
+
+  // Load preferences on mount
+  useEffect(() => {
+    const savedDark = localStorage.getItem("darkMode");
+    const savedFuzzy = localStorage.getItem("fuzzySearch");
+
+    if (savedDark !== null) setDarkMode(savedDark === "true");
+    if (savedFuzzy !== null) setFuzzySearch(savedFuzzy === "true");
+  }, []);
+
+  // Save preferences whenever changed
+  useEffect(() => {
+    localStorage.setItem("darkMode", darkMode);
+  }, [darkMode]);
+
+  useEffect(() => {
+    localStorage.setItem("fuzzySearch", fuzzySearch);
+  }, [fuzzySearch]);
 
   function addPerson(newPerson) {
     setFavoritePeople(prev => {
@@ -46,7 +64,6 @@ export default function App() {
       <Router>
         <NavigationBar darkMode={darkMode} />
         <Routes>
-          {/* HashRouter uses the part after #, so these paths stay simple */}
           <Route
             path="/"
             element={

@@ -99,7 +99,8 @@ export default function SettingsPage({
           <li>Search by first and last name</li>
           <li>Sort results by first or last name</li>
           <li>Optional fuzzy search for broader matching</li>
-          <li>Save profiles for quick access later</li>
+          <li>Export profiles for quick access later</li>
+          <li>Google search a name for more info</li>
           <li>Dark mode for easier viewing</li>
         </ul>
       </div>

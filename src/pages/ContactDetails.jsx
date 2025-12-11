@@ -25,6 +25,7 @@ function ContactDetails({ darkMode }) {
         }}
         aria-label="Contact details"
       >
+        <h1 className="visually-hidden">Contact Details</h1>
         <Container>
           <Row className="justify-content-center">
             <Col xs={12} md={11} lg={10}>
@@ -146,7 +147,22 @@ function ContactDetails({ darkMode }) {
                         {person.allPhones.join(", ")}
                       </p>
                     )}
-                    <Button onClick={() => {window.open("https://www.google.com/search?q=" + encodeURIComponent(person.firstName + " " + person.lastName + " UW Madison"), "_blank").focus();}}>Search {person.firstName + " " + person.lastName}.</Button>
+                    <Button
+                      style={{
+                        backgroundColor: "#C5050C",
+                        borderColor: "#C5050C",
+                        color: "#FFFFFF"
+                      }}
+                      onClick={() => {
+                        window.open(
+                          "https://www.google.com/search?q=" +
+                            encodeURIComponent(person.firstName + " " + person.lastName + " UW Madison"),
+                          "_blank"
+                        ).focus();
+                      }}
+                    >
+                      Search {person.firstName + " " + person.lastName}
+                    </Button>
                   </Col>
                 </Row>
 

@@ -278,18 +278,24 @@ function SearchPage(props) {
                 <Row className="g-3">
                   <Col md={6}>
                     <TextEntry
-                      label="First Name"
-                      value={firstName}
-                      onChange={setFirstName}
-                      ariaLabel="First name to search"
+                        label="First Name"
+                        value={firstName}
+                        onChange={setFirstName}
+                        ariaLabel="First name to search"
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter") e.preventDefault();
+                        }}
                     />
                   </Col>
                   <Col md={6}>
                     <TextEntry
-                      label="Last Name"
-                      value={lastName}
-                      onChange={setLastName}
-                      ariaLabel="Last name to search"
+                        label="Last Name"
+                        value={lastName}
+                        onChange={setLastName}
+                        ariaLabel="Last name to search"
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter") e.preventDefault();
+                        }}
                     />
                   </Col>
                 </Row>
@@ -349,38 +355,43 @@ function SearchPage(props) {
                         flexWrap: "wrap"
                       }}
                     >
-                      <Button
-                        variant={props.darkMode ? "outline-light" : "outline-secondary"}
+                        <Button
+                        style={{
+                            borderColor: props.darkMode ? "#FFFFFF" : "#000000",
+                            color: props.darkMode ? "#FFFFFF" : "#000000",
+                            backgroundColor: "transparent"
+                        }}
+                        variant="outline-light"
                         type="button"
                         onClick={clearSearch}
-                      >
+                        >
                         Clear
-                      </Button>
-                      <Button
-                        style={{
-                          backgroundColor: BADGER_RED,
-                          borderColor: BADGER_RED,
-                          color: "#FFFFFF"
-                        }}
-                        disabled={isLoading}
-                        type="button"
-                        onClick={search}
-                      >
-                        {isLoading ? (
-                          <>
-                            <Spinner
-                              as="span"
-                              animation="border"
-                              size="sm"
-                              role="status"
-                              aria-hidden="true"
-                            />{" "}
-                            Searching…
-                          </>
-                        ) : (
-                          "Search"
-                        )}
-                      </Button>
+                        </Button>
+                        <Button
+                            style={{
+                            backgroundColor: BADGER_RED,
+                            borderColor: BADGER_RED,
+                            color: "#FFFFFF"
+                            }}
+                            disabled={isLoading}
+                            type="button"
+                            onClick={search}
+                        >
+                            {isLoading ? (
+                            <>
+                                <Spinner
+                                as="span"
+                                animation="border"
+                                size="sm"
+                                role="status"
+                                aria-hidden="true"
+                                />{" "}
+                                Searching…
+                            </>
+                            ) : (
+                            "Search"
+                            )}
+                        </Button>
                     </div>
                   </Col>
                 </Row>

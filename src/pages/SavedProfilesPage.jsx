@@ -131,8 +131,15 @@ function SavedProfilesPage(props) {
                 }}
               >
                 <div className="d-flex justify-content-between align-items-center">
-                  <span>Saved Profiles</span>
+                  <h1 style={{ fontSize: "1.8rem", fontWeight: 600, marginTop: "0.5rem" }}>
+                    Saved Profiles
+                  </h1>
                   <Button
+                    style={{
+                      borderColor: props.darkMode ? "#FFFFFF" : "#000000",
+                      color: props.darkMode ? "#FFFFFF" : "#000000",
+                      backgroundColor: "transparent"
+                    }}
                     variant="outline-secondary"
                     size="sm"
                     onClick={handleExportCsv}

@@ -18,7 +18,6 @@ function PeoplePaginator(props) {
     const paginationItems = [];
     const current = pageNumber + 1;
 
-    const backgroundColor = props.darkMode ? "#111111" : "#FFFFFF";
     const textColor = props.darkMode ? "#FFFFFF" : "#000000";
 
     function addPage(num) {
@@ -34,7 +33,7 @@ function PeoplePaginator(props) {
                 }}
                 linkStyle={{
                     backgroundColor: isActive ? accentColor : "transparent",
-                    color: isActive ? "#FFFFFF" : grayBorder,
+                    color: isActive ? "#FFFFFF" : textColor,   // darker numbers in light mode
                     borderColor: grayBorder
                 }}
             >
